@@ -45,9 +45,9 @@ class Command(BaseCommand):
         fake = Faker()
         for _ in range(count):
             OrgMember.objects.create(
-                student = Student.objects.order_by('?').first(),
-                organizations = Organization.objects.order_by('?').first(),
-                date_joined = fake.date_between(
+                student=Student.objects.order_by('?').first(),
+                organizations=Organization.objects.order_by('?').first(),
+                date_joined=fake.date_between(
                     start_date = "-2y", 
                     end_date = "today"
             )
