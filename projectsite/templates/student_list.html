@@ -47,6 +47,18 @@
                    <td>{{ object.last_name }}</td>  
                    <td>{{ object.first_name }}</td>
                    <td>{{ object.program }}</td> 
+                   <td> 
+                        <a href="student_list/{{ object.id }}">Edit</a>
+                        <!--<a href="orgmember_list/{{ object.id }}/delete" class="text-danger">Delete</a>-->   
+                   </td> 
+                   </tr> 
+                        {% empty %}  
+                   <tr>  
+                    <td colspan="4" style="text-align: center"> 
+                    <p class="text-sm font-weight-bold mb-0">No Records Found</p> 
+                    </td> 
+                 </tr>  
+                 </tr>                    
                  </tr> 
                  {% endfor %}  
                </tbody> 
