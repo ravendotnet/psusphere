@@ -13,7 +13,7 @@
                 <div class="card">
 
                     <div class="card-header">
-                        <div class="card-title">List of Organizations</div>
+                        <div class="card-title">List of Colleges</div>
                         <div class="card-category">Page Subtitle</div>
                     </div>
 
@@ -65,6 +65,8 @@
                                 {% for object in college %}
                                 <tr>
                                     <td>{{ object.college_name }}</td>
+                                    <td>{{ object.created_at }}</td>
+                                    <td>{{ object.updated_at }}</td>
                                     <!--td>{{ object.college }}</td>
                                     <td>{{ object.description }}</td>-->
                                     <td>
