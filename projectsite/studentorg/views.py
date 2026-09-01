@@ -4,6 +4,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from studentorg.models import Organization
 from studentorg.models import OrgMember
 from studentorg.models import Student
+from studentorg.models import College
 from studentorg.forms import StudentForm
 from studentorg.forms import OrgMemberForm
 from studentorg.forms import OrganizationForm 
@@ -15,6 +16,7 @@ class HomePageView(ListView):
     context_object_name = 'home'
     template_name = "home.html"
 
+# Organization
 class OrganizationList(ListView):
     model = Organization
     context_object_name = 'organization'
@@ -80,6 +82,19 @@ class StudentUpdateView(UpdateView):
     form_class = StudentForm
     template_name = 'student_form.html'
     success_url = reverse_lazy('student-list')
-     
+
+class StudentDeleteView(DeleteView): 
+    model = Student  
+    template_name = 'student_del.html' 
+    success_url = reverse_lazy('student-list') 
+
+# College
+class CollegeList(ListView):
+    model = College
+    context_object_name = 'college'
+    template_name = 'college_list.html'
+    paginate_by = 5
+
+# Program
 
 # Create your views here.
