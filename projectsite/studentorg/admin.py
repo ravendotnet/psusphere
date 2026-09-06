@@ -1,12 +1,6 @@
 from django.contrib import admin
 from .models import College, Program, Organization, Student, OrgMember
 
-#admin.site.register(College)
-#admin.site.register(Program)
-#admin.site.register(Organization)
-#admin.site.register(Student)
-#admin.site.register(OrgMember)
-
 @admin.register(College)
 class CollegeAdmin(admin.ModelAdmin):
     list_display = ("college_name", "created_at", "updated_at",)

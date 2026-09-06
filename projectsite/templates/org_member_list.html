@@ -23,21 +23,26 @@
                         <div class="row align-items-center mb-3">
 
                             <!-- Search Bar -->
-                            <div class="col-md-6 mb-2 mb-md-0">
-                                <form class="navbar-left navbar-form nav-search" action="">
-                                    <div class="input-group">
-                                        <input type="text"
-                                               placeholder="Search ..."
-                                               class="form-control">
+                                <div class="col-md-6 mb-2 mb-md-0">
+                                    <form class="navbar-left navbar-form nav-search mr-md-3" action="{% url 'org-member-list' %}" method="get">
+                                        <div class="input-group">
+                                            <input type="text"
+                                                placeholder="Search ..."
+                                                class="form-control"
+                                                name="q"
+                                                value="{{ request.GET.q|default:'' }}">
+                                            <input type="hidden"
+                                                name="sort_by"
+                                                value="{{ request.GET.sort_by }}">
 
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="la la-search search-icon"></i>
-                                            </span>
+                                            <div class="input-group-append">
+                                                <button type="submit" class="input-group-text">
+                                                    <i class="la la-search search-icon"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
-                            </div>
+                                    </form>
+                                </div>
 
                             <!-- Add Org Member Button -->
                             <div class="col-md-6 text-md-right">
@@ -46,6 +51,29 @@
                                     Add Organization Member
                                 </a>
                             </div>
+
+                        </div>
+
+                        <!-- Dropdown -->
+                        <div class="col-md-12">
+                            <form method="get" class="row g-2 align-items-center">
+                                <div class="col-auto">
+                                    <label for="smallSelect" class="col-form-label">Sort by</label>
+                                </div>
+                                <div class="col-auto">
+                                    <select class="form-control form-control-sm" id="smallSelect" name="sort_by">
+                                        <option value="student__last_name" {% if request.GET.sort_by == "student__last_name" %}selected{% endif %}>
+                                            Student Last Name              
+                                        </option>
+                                        <option value="date_joined" {% if request.GET.sort_by == "date_joined" %}selected{% endif %}>
+                                            Date Joined
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary btn-sm btn-rounded">Sort</button>
+                                </div>
+                            </form>
 
                         </div>
 
@@ -74,17 +102,18 @@
                                         <a href="{% url 'org-member-update' object.id %}">Edit</a>
                                         <a href="{% url 'org-member-delete' object.id %}" class="text-danger">Delete</a>
                                     </td>
-                                    {% empty %}
+                                </tr>
+
+                                {% empty %}
                                     <tr>
-                                        <td>
+                                        <td
                                             colspan="5" style="text-align: center">
-                                            <p>
-                                                class="text-sm font-weight-bold mb=0">No Records Found</p>
+                                            <p
+                                                class="text-sm font-weight-bold mb-0">No Records Found</p>
                                             </p>
                                         </td>
                                     </tr>
-                                    {% endfor %}
-                                </tr>
+                                {% endfor %}
                             </tbody>
 
                         </table>

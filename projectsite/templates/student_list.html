@@ -23,21 +23,23 @@
                         <div class="row align-items-center mb-3">
 
                             <!-- Search Bar -->
-                            <div class="col-md-6 mb-2 mb-md-0">
-                                <form class="navbar-left navbar-form nav-search" action="">
-                                    <div class="input-group">
-                                        <input type="text"
-                                               placeholder="Search ..."
-                                               class="form-control">
+                                <div class="col-md-6 mb-2 mb-md-0">
+                                    <form class="navbar-left navbar-form nav-search mr-md-3" action="{% url 'student-list' %}" method="get">
+                                        <div class="input-group">
+                                            <input type="text"
+                                                placeholder="Search ..."
+                                                class="form-control"
+                                                name="q"
+                                                value="{{ request.GET.q|default:'' }}" />
 
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="la la-search search-icon"></i>
-                                            </span>
+                                            <div class="input-group-append">
+                                                <button type="submit" class="input-group-text">
+                                                    <i class="la la-search search-icon"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
-                            </div>
+                                    </form>
+                                </div>
 
                             <!-- Add Student Button -->
                             <div class="col-md-6 text-md-right">
@@ -75,17 +77,18 @@
                                         <a href="{% url 'student-update' object.id %}">Edit</a>
                                         <a href="{% url 'student-delete' object.id %}" class="text-danger">Delete</a>
                                     </td>
-                                    {% empty %}
+                                </tr>
+
+                                {% empty %}
                                     <tr>
-                                        <td>
+                                        <td
                                             colspan="6" style="text-align: center">
-                                            <p>
-                                                class="text-sm font-weight-bold mb=0">No Records Found</p>
+                                            <p
+                                                class="text-sm font-weight-bold mb-0">No Records Found</p>
                                             </p>
                                         </td>
                                     </tr>
-                                    {% endfor %}
-                                </tr>
+                                {% endfor %}
                             </tbody>
 
                         </table>
