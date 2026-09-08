@@ -1,141 +1,200 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from studentorg.models import Organization
-from studentorg.models import OrgMember
-from studentorg.models import Student
-from studentorg.models import College
-from studentorg.models import Program
-from studentorg.forms import ProgramForm
-from studentorg.forms import CollegeForm
-from studentorg.forms import StudentForm
-from studentorg.forms import OrgMemberForm
-from studentorg.forms import OrganizationForm 
-from django.urls import reverse_lazy 
-
+from studentorg.models import Organization, OrgMember, Student, College, Program
+from studentorg.forms import OrganizationForm, OrgMemberForm, StudentForm, CollegeForm, ProgramForm
+from django.db.models import Q
+from django.utils import timezone
+from django.urls import reverse_lazy
+paginate_by = 5
 
 class HomePageView(ListView):
     model = Organization
     context_object_name = 'home'
     template_name = "home.html"
 
-# Organization
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total_students"] = Student.objects.count()
+        context["total_org"] = Organization.objects.count()
+        context["total_program"] = Program.objects.count()
+        today = timezone.now().date()
+        count = (OrgMember.objects.filter(date_joined__year=today.year)
+                 .values("student")
+                 .distinct()
+                 .count())
+        context["students_joined_this_year"] = count
+        return context
+    
+    
+
+class OrganizationCreateView(CreateView):
+    model = Organization
+    form_class = OrganizationForm
+    template_name = "org_form.html"
+    success_url = reverse_lazy('organization-list')
 class OrganizationList(ListView):
     model = Organization
     context_object_name = 'organization'
     template_name = "org_list.html"
     paginate_by = 5
+    ordering = ["name"]
 
-class OrganizationCreateView(CreateView): 
-    model = Organization 
-    form_class = OrganizationForm  
-    template_name = 'org_form.html' 
-    success_url = reverse_lazy('organization-list') 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+        if query:
+            qs = qs.filter(
+                Q(name__icontains=query) |
+                Q(description__icontains=query)
+            )
+        return qs
+class OrganizationUpdateView(UpdateView):
+    model = Organization
+    form_class = OrganizationForm
+    template_name = "org_form.html"
+    success_url = reverse_lazy('organization-list')
+class OrganizationDeleteView(DeleteView):
+    model = Organization
+    template_name = "org_del.html"
+    success_url = reverse_lazy('organization-list')
 
-class OrganizationUpdateView(UpdateView): 
-    model = Organization 
-    form_class = OrganizationForm  
-    template_name = 'org_form.html' 
-    success_url = reverse_lazy('organization-list') 
-
-class OrganizationDeleteView(DeleteView): 
-    model = Organization  
-    template_name = 'org_del.html' 
-    success_url = reverse_lazy('organization-list') 
-
-# OrgMember
-class OrgMemberList(ListView):
-    model = OrgMember
-    context_object_name = 'orgmember'
-    template_name = 'orgmember_list.html'
-    paginate_by = 5
-
-class OrgMemberCreateView(CreateView):
+#ORG_MEMBERS
+class Org_MemberCreateView(CreateView):
     model = OrgMember
     form_class = OrgMemberForm
-    template_name = 'orgmember_form.html'
-    success_url = reverse_lazy('orgmember-list')
-
-class OrgMemberUpdateView(UpdateView): 
-    model = OrgMember 
-    form_class = OrgMemberForm  
-    template_name = 'orgmember_form.html' 
-    success_url = reverse_lazy('orgmember-list') 
-
-class OrgMemberDeleteView(DeleteView): 
-    model = OrgMember  
-    template_name = 'orgmember_del.html' 
-    success_url = reverse_lazy('orgmember-list') 
-
-# Student
-class StudentList(ListView):
-    model = Student
-    context_object_name = 'student'
-    template_name = 'student_list.html'
+    template_name = "org_member_form.html"
+    success_url = reverse_lazy('org-member-list')
+class Org_MemberList(ListView):
+    model = OrgMember
+    context_object_name = 'org_member'
+    template_name = "org_member_list.html"
     paginate_by = 5
 
+    def get_ordering(self):
+                allowed = ["student__last_name", "date_joined"]
+                sort_by = self.request.GET.get("sort_by")
+                if sort_by in allowed:
+                    return sort_by
+                return "student__last_name"
+    
+    def get_queryset(self):
+                    qs = super().get_queryset()
+                    query = self.request.GET.get('q')
+                    if query:
+                        qs = qs.filter(
+                            Q(student__last_name__icontains=query) |
+                            Q(student__first_name__icontains=query)
+                        )
+                    return qs
+class Org_MemberUpdateView(UpdateView):
+    model = OrgMember
+    form_class = OrgMemberForm
+    template_name = "org_member_form.html"
+    success_url = reverse_lazy('org-member-list')
+class Org_MemberDeleteView(DeleteView):
+    model = OrgMember
+    template_name = "org_member_del.html"
+    success_url = reverse_lazy('org-member-list')
+
+#STUDENT
 class StudentCreateView(CreateView):
     model = Student
     form_class = StudentForm
-    template_name = 'student_form.html'
+    template_name = "student_form.html"
     success_url = reverse_lazy('student-list')
+class StudentList(ListView):
+    model = Student
+    context_object_name = 'student'
+    template_name = "student_list.html"
+    paginate_by = 5
+    ordering = ["student_id", "last_name"]
 
-class StudentUpdateView(UpdateView): 
+    def get_queryset(self):
+            qs = super().get_queryset()
+            query = self.request.GET.get('q')
+            if query:
+                qs = qs.filter(
+                    Q(last_name__icontains=query) |
+                    Q(first_name__icontains=query)
+                )
+            return qs
+    
+class StudentUpdateView(UpdateView):
     model = Student
     form_class = StudentForm
-    template_name = 'student_form.html'
+    template_name = "student_form.html"
+    success_url = reverse_lazy('student-list')
+class StudentDeleteView(DeleteView):
+    model = Student
+    template_name = "student_del.html"
     success_url = reverse_lazy('student-list')
 
-class StudentDeleteView(DeleteView): 
-    model = Student  
-    template_name = 'student_del.html' 
-    success_url = reverse_lazy('student-list') 
-
-# College
-class CollegeList(ListView):
-    model = College
-    context_object_name = 'college'
-    template_name = 'college_list.html'
-    paginate_by = 5
-
+#COLLEGE
 class CollegeCreateView(CreateView):
     model = College
     form_class = CollegeForm
-    template_name = 'college_form.html'
+    template_name = "college_form.html"
+    success_url = reverse_lazy('college-list')
+class CollegeList(ListView):
+    model = College
+    context_object_name = 'college'
+    template_name = "college_list.html"
+    paginate_by = 5
+    ordering = ["college_name"]
+
+    def get_queryset(self):
+            qs = super().get_queryset()
+            query = self.request.GET.get('q')
+            if query:
+                qs = qs.filter(
+                    Q(college_name__icontains=query) 
+                )
+            return qs
+class CollegeUpdateView(UpdateView):
+    model = College
+    form_class = CollegeForm
+    template_name = "college_form.html"
+    success_url = reverse_lazy('college-list')
+class CollegeDeleteView(DeleteView):
+    model = College
+    template_name = "college_del.html"
     success_url = reverse_lazy('college-list')
 
-class CollegeUpdateView(UpdateView): 
-    model = College 
-    form_class = CollegeForm  
-    template_name = 'college_form.html' 
-    success_url = reverse_lazy('college-list') 
-
-class CollegeDeleteView(DeleteView): 
-    model = College 
-    template_name = 'college_del.html' 
-    success_url = reverse_lazy('college-list') 
-
-# Program
+#PROGRAM
+class ProgramCreateView(CreateView):
+    model = Program
+    form_class = ProgramForm
+    template_name = "program_form.html"
+    success_url = reverse_lazy('program-list')
 class ProgramList(ListView):
     model = Program
     context_object_name = 'program'
     template_name = "program_list.html"
     paginate_by = 5
 
-class ProgramCreateView(CreateView):
+    def get_ordering(self):
+        allowed = ["prog_name", "college__college_name"]
+        sort_by = self.request.GET.get("sort_by")
+        if sort_by in allowed:
+            return sort_by
+        return "prog_name"
+    
+    def get_queryset(self):
+                qs = super().get_queryset()
+                query = self.request.GET.get('q')
+                if query:
+                    qs = qs.filter(
+                        Q(prog_name__icontains=query) |
+                        Q(college__college_name__icontains=query) 
+                    )
+                return qs
+class ProgramUpdateView(UpdateView):
     model = Program
     form_class = ProgramForm
-    template_name = 'program_form.html'
+    template_name = "program_form.html"
     success_url = reverse_lazy('program-list')
-
-class ProgramUpdateView(UpdateView): 
-    model = Program 
-    form_class = ProgramForm  
-    template_name = 'program_form.html' 
-    success_url = reverse_lazy('program-list') 
-
 class ProgramDeleteView(DeleteView):
-    model = Program 
-    template_name = 'program_del.html' 
-    success_url = reverse_lazy('program-list') 
-# Create your views here.
+    model = Program
+    template_name = "program_del.html"
+    success_url = reverse_lazy('program-list')
