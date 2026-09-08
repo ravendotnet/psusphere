@@ -42,7 +42,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'studentorg',
     "widget_tweaks",
+    'django.contrib.sites',    
+    'allauth', 
+    'allauth.account', 
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google', 
+    'allauth.socialaccount.providers.github', 
 ]
+
+SITE_ID = 2 
+ 
+AUTHENTICATION_BACKENDS = [ 
+    'django.contrib.auth.backends.ModelBackend',       
+    'allauth.account.auth_backends.AuthenticationBackend', 
+] 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,9 +63,26 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware', 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+LOGIN_URL = '/accounts/login/'          
+LOGIN_REDIRECT_URL = '/'                
+# where @login_required will send users 
+# where to go after successful login 
+LOGOUT_REDIRECT_URL = '/accounts/login/'   # after logout, go back to login 
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'    # where to redirect after logout 
+ACCOUNT_LOGOUT_ON_GET = True         
+# logout immediately on GET 
+ACCOUNT_LOGIN_METHODS = {"username", "email"}  # allow login with username OR email 
+ACCOUNT_SIGNUP_FIELDS = [ 
+"username*", 
+"email*", 
+"password1*", 
+"password2*", 
+] 
 
 ROOT_URLCONF = 'projectsite.urls'
 
