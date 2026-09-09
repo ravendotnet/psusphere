@@ -51,7 +51,8 @@ INSTALLED_APPS = [
 
 #SITE_ID = 3
 if "pythonanywhere" in socket.gethostname():
-    SITE_ID = 3 # production site (janepauline.pythonanywhere.com)
+    SITE_ID = 2 # production site (janepauline.pythonanywhere.com)
+else:
     SITE_ID = 1 # local site (127.0.0.1:8000)
 
 AUTHENTICATION_BACKENDS = [
@@ -59,7 +60,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-LOG_URL = '/accounts/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
