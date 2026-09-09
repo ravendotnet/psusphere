@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from studentorg.models import Organization, OrgMember, Student, College, Program
 from studentorg.forms import OrganizationForm, OrgMemberForm, StudentForm, CollegeForm, ProgramForm
@@ -8,7 +9,7 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 paginate_by = 5
 
-class HomePageView(ListView):
+class HomePageView(LoginRequiredMixin, ListView):
     model = Organization
     context_object_name = 'home'
     template_name = "home.html"
@@ -25,8 +26,7 @@ class HomePageView(ListView):
                  .count())
         context["students_joined_this_year"] = count
         return context
-    
-    
+       
 
 class OrganizationCreateView(CreateView):
     model = Organization
