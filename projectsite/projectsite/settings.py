@@ -50,10 +50,10 @@ INSTALLED_APPS = [
 ]
 
 #SITE_ID = 3
-if "pythonanywhere" in socket.gethostname():
-    SITE_ID = 2 # production site (janepauline.pythonanywhere.com)
+if "blue-liveweb" in socket.gethostname():
+    SITE_ID = 2
 else:
-    SITE_ID = 1 # local site (127.0.0.1:8000)
+    SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
