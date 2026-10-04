@@ -50,11 +50,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
 ]
 
-#SITE_ID = 3
-if "blue-liveweb" in socket.gethostname():
-    SITE_ID = 2
-else:
-    SITE_ID = 1
+SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
