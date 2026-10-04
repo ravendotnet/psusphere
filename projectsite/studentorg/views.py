@@ -40,6 +40,13 @@ class OrganizationList(ListView):
     paginate_by = 5
     ordering = ["name"]
 
+    """def get_ordering(self):
+        allowed = ["name", "college"]
+        sort_by = self.request.GET.get("sort_by")
+        if sort_by in allowed:
+            return sort_by
+        return "name" """
+    
     def get_queryset(self):
         qs = super().get_queryset()
         query = self.request.GET.get('q')
@@ -110,6 +117,13 @@ class StudentList(ListView):
     paginate_by = 5
     ordering = ["student_id", "last_name"]
 
+    """def get_ordering(self):
+            allowed = ["name", "college"]
+            sort_by = self.request.GET.get("sort_by")
+            if sort_by in allowed:
+                return sort_by
+            return "name" """
+    
     def get_queryset(self):
             qs = super().get_queryset()
             query = self.request.GET.get('q')
